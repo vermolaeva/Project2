@@ -1,0 +1,100 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Main {
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new PizzaOrderFrame().setVisible(true));
+    }
+
+}
+
+class PizzaOrderFrame extends JFrame {
+
+    // UI components for pizza sizes as radio buttons (only one can be selected).
+    private final JRadioButton smallSize = new JRadioButton("Small ($5)");
+    private final JRadioButton mediumSize = new JRadioButton("Medium ($10)");
+    private final JRadioButton largeSize = new JRadioButton("Large ($15)");
+    private final JRadioButton superSize = new JRadioButton("Super ($20)");
+    // UI components for toppings as check boxes (multiple can be selected).
+    private final JCheckBox pepperoni = new JCheckBox("Pepperoni");
+    private final JCheckBox mushrooms = new JCheckBox("Mushrooms");
+    private final JCheckBox onions = new JCheckBox("Onions");
+    private final JCheckBox sausage = new JCheckBox("Sausage");
+    private final JCheckBox bacon = new JCheckBox("Bacon");
+    // Label to display the total cost.
+    private final JLabel totalCostLabel = new JLabel("Total Cost: $0.00");
+
+    public PizzaOrderFrame() {
+        // Frame setup: title, size, default close operation, and layout.
+        setTitle("BigY Store Pizza Ordering System");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new FlowLayout());
+
+        // Group for pizza size radio buttons to ensure only one can be selected.
+        ButtonGroup sizeGroup = new ButtonGroup();
+        sizeGroup.add(smallSize);
+        sizeGroup.add(mediumSize);
+        sizeGroup.add(largeSize);
+        sizeGroup.add(superSize);
+
+        // Panel for pizza sizes with a border and title.
+        JPanel sizePanel = new JPanel();
+        sizePanel.setBorder(BorderFactory.createTitledBorder("Pizza Sizes:"));
+        sizePanel.add(smallSize);
+        sizePanel.add(mediumSize);
+        sizePanel.add(largeSize);
+        sizePanel.add(superSize);
+
+        // Panel for toppings with a border and title.
+        JPanel toppingPanel = new JPanel();
+        toppingPanel.setBorder(BorderFactory.createTitledBorder("Toppings:"));
+        toppingPanel.add(pepperoni);
+        toppingPanel.add(mushrooms);
+        toppingPanel.add(onions);
+        toppingPanel.add(sausage);
+        toppingPanel.add(bacon);
+
+        // Button to calculate the total cost.
+        JButton calculateButton = new JButton("Total Cost");
+        calculateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Action to perform when the calculate button is clicked.
+                updateTotalCost();
+            }
+        });
+
+        // Adding panels and button to the frame.
+        add(sizePanel);
+        add(toppingPanel);
+        add(calculateButton);
+        add(totalCostLabel);
+    }
+
+    // calculating and updating the total cost based on selected options.
+    private void updateTotalCost() {
+        // Determining the base price from the selected pizza size.
+        double basePrice = smallSize.isSelected() ? 5.0 :
+                mediumSize.isSelected() ? 10.0 :
+                        largeSize.isSelected() ? 15.0 :
+                                superSize.isSelected() ? 20.0 : 0.0;
+
+        // Counting the number of selected toppings.
+        int toppingCount = 0;
+        if (pepperoni.isSelected()) toppingCount++;
+        if (mushrooms.isSelected()) toppingCount++;
+        if (onions.isSelected()) toppingCount++;
+        if (sausage.isSelected()) toppingCount++;
+        if (bacon.isSelected()) toppingCount++;
+
+        // Calculating the cost of toppings, applying the deal for three toppings.
+        double toppingCost = toppingCount == 3 ? 1.25 : toppingCount * 0.50;
+        // Calculating the total cost and updating the label.
+        double totalCost = basePrice + toppingCost;
+        totalCostLabel.setText(String.format("Total Cost: $%.2f", totalCost));
+    }
+}
